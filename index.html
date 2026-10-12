@@ -45,14 +45,15 @@
       position: relative;
     }
 
-    .nav-btn {
-      background: rgba(255, 255, 255, 0.85);
+    /* Botão Voltar (Azul) */
+    .nav-btn-prev {
+      background: rgba(52, 152, 219, 0.85);
       border: none;
       border-radius: 50%;
       width: 65px;
       height: 65px;
       font-size: 2.2rem;
-      color: #2c3e50;
+      color: white;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -64,9 +65,41 @@
       flex-shrink: 0;
     }
 
-    .nav-btn:active {
+    .nav-btn-prev:active {
       transform: scale(0.9);
-      background: rgba(255, 255, 255, 1);
+      background: rgba(41, 128, 185, 1);
+    }
+
+    /* Botão Avançar (Verde e Maior) */
+    .nav-btn-next {
+      background: rgba(46, 204, 113, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      font-size: 2.8rem;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+      z-index: 10;
+      transition: transform 0.1s, background 0.2s;
+      outline: none;
+      flex-shrink: 0;
+    }
+
+    .nav-btn-next:active {
+      transform: scale(0.9);
+      background: rgba(39, 174, 96, 1);
+    }
+
+    /* Estilo quando o botão de avançar estiver bloqueado */
+    .nav-btn-next.locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
     }
 
     .card-viewport {
@@ -181,7 +214,7 @@
   <button class="fullscreen-btn" id="fs-btn" title="Tela Cheia">⛶</button>
 
   <div class="game-container">
-    <button class="nav-btn" id="prev-btn" title="Anterior">◀</button>
+    <button class="nav-btn-prev" id="prev-btn" title="Anterior">◀</button>
 
     <div class="card-viewport" id="viewport">
       <div class="card" id="card">
@@ -196,11 +229,11 @@
       </div>
     </div>
 
-    <button class="nav-btn" id="next-btn" title="Próximo">▶</button>
+    <button class="nav-btn-next" id="next-btn" title="Próximo">▶</button>
   </div>
 
   <script>
-   const items = [
+    const items = [
       { name: 'Abelha', file: 'abelha.jpg' },
       { name: 'Arara', file: 'arara.jpg' },
       { name: 'Baleia', file: 'baleia.jpg' },
@@ -247,14 +280,24 @@
       { name: 'Vaca', file: 'vaca.jpg' },
       { name: 'Zebra', file: 'zebra.jpg' }
     ];
+
     let currentIndex = 0;
     let isTransitioning = false;
+    let canAdvance = true; // Controla se ela pode avançar ou se precisa apertar o som primeiro
     
     const cardImg = document.getElementById('card-img');
     const cardName = document.getElementById('card-name');
     const speakBtn = document.getElementById('speak-btn');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
+
+    function updateNextButtonState() {
+      if (canAdvance) {
+        nextBtn.classList.remove('locked');
+      } else {
+        nextBtn.classList.add('locked');
+      }
+    }
 
     function preloadAllImages() {
       let loadedCount = 0;
@@ -276,7 +319,7 @@
         const img = new Image();
         img.src = `imagens/${item.file}`;
         img.onload = checkFinished;
-        img.onerror = checkFinished; // Garante que se faltar alguma imagem, o app abre mesmo assim
+        img.onerror = checkFinished;
       });
     }
 
@@ -312,15 +355,22 @@
       const item = items[index];
       cardImg.src = `imagens/${item.file}`;
       cardName.textContent = item.name;
+      updateNextButtonState();
     }
 
     function proximoAnimal() {
       if (isTransitioning) return;
+      if (!canAdvance) return; // Bloqueia se ainda não ouviu o som do animal atual
+
       if (currentIndex < items.length - 1) {
         isTransitioning = true;
         currentIndex++;
-        // Som de navegação removido para frente
         renderCard(currentIndex);
+        
+        // Assim que muda para o novo card, bloqueia o avanço até que ela aperte o som
+        canAdvance = false;
+        updateNextButtonState();
+
         setTimeout(() => { isTransitioning = false; }, 150);
       }
     }
@@ -330,8 +380,12 @@
       if (currentIndex > 0) {
         isTransitioning = true;
         currentIndex--;
-        // Som de navegação também removido para trás para manter a navegação silenciosa
         renderCard(currentIndex);
+        
+        // Ao voltar, permitimos que ela avance livremente ou mantenha a regra se preferir (aqui liberamos para facilitar o fluxo de retorno)
+        canAdvance = true; 
+        updateNextButtonState();
+
         setTimeout(() => { isTransitioning = false; }, 150);
       }
     }
@@ -342,8 +396,12 @@
     speakBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       e.preventDefault();
-      playPopSound(); // Mantém o som apenas ao clicar no botão de falar o nome do animal
+      playPopSound(); 
       speakName(items[currentIndex].name);
+
+      // Ao clicar no som, libera o botão de avançar para o próximo animal!
+      canAdvance = true;
+      updateNextButtonState();
     });
 
     document.getElementById('fs-btn').addEventListener('click', () => {
