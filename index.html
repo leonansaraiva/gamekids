@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
   <title>GameKids - Animais</title>
   
-  <!-- Configurações para PWA / Atalho na Tela Inicial -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#fed6e3">
   <link rel="manifest" href="manifest.json">
-  <!-- Ícone para o atalho do navegador -->
   <link rel="icon" type="image/jpeg" href="imagens/cachorro.jpg">
   <link rel="apple-touch-icon" href="imagens/cachorro.jpg">
 
@@ -33,7 +31,6 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      touch-action: pan-y;
     }
 
     .game-container {
@@ -48,7 +45,6 @@
       position: relative;
     }
 
-    /* Botões de Navegação Lateral (Esquerda e Direita) */
     .nav-btn {
       background: rgba(255, 255, 255, 0.85);
       border: none;
@@ -80,7 +76,6 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      perspective: 1000px;
       margin: 0 15px;
     }
 
@@ -97,14 +92,7 @@
       justify-content: space-between;
       padding: 25px;
       position: absolute;
-      touch-action: none;
-      cursor: grab;
-      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       border: 10px solid #fff;
-    }
-
-    .card:active {
-      cursor: grabbing;
     }
 
     .image-frame {
@@ -193,7 +181,6 @@
   <button class="fullscreen-btn" id="fs-btn" title="Tela Cheia">⛶</button>
 
   <div class="game-container">
-    <!-- Botão Esquerda -->
     <button class="nav-btn" id="prev-btn" title="Anterior">◀</button>
 
     <div class="card-viewport" id="viewport">
@@ -209,7 +196,6 @@
       </div>
     </div>
 
-    <!-- Botão Direita -->
     <button class="nav-btn" id="next-btn" title="Próximo">▶</button>
   </div>
 
@@ -254,7 +240,8 @@
     ];
 
     let currentIndex = 0;
-    const card = document.getElementById('card');
+    let isTransitioning = false; // <-- Trava anti-spam de cliques rápidos
+    
     const cardImg = document.getElementById('card-img');
     const cardName = document.getElementById('card-name');
     const speakBtn = document.getElementById('speak-btn');
@@ -318,20 +305,26 @@
       cardName.textContent = item.name;
     }
 
-    // Funções de navegação por botões
+    // Navegação com trava para evitar cliques múltiplos muito rápidos
     function proximoAnimal() {
+      if (isTransitioning) return;
       if (currentIndex < items.length - 1) {
+        isTransitioning = true;
         currentIndex++;
         playPopSound();
         renderCard(currentIndex);
+        setTimeout(() => { isTransitioning = false; }, 150); // Libera o clique após 150ms
       }
     }
 
     function animalAnterior() {
+      if (isTransitioning) return;
       if (currentIndex > 0) {
+        isTransitioning = true;
         currentIndex--;
         playPopSound();
         renderCard(currentIndex);
+        setTimeout(() => { isTransitioning = false; }, 150);
       }
     }
 
@@ -354,50 +347,6 @@
         }
       }
     });
-
-    // Controle de Arrastar (Swipe) mantido para complementar
-    let startX = 0;
-    let currentX = 0;
-    let isDragging = false;
-
-    function handleStart(e) {
-      if (e.target.closest('#speak-btn') || e.target.closest('#fs-btn') || e.target.closest('.nav-btn')) return;
-      isDragging = true;
-      startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-      card.style.transition = 'none';
-    }
-
-    function handleMove(e) {
-      if (!isDragging) return;
-      currentX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-      const diffX = currentX - startX;
-      card.style.transform = `translateX(${diffX}px) rotate(${diffX * 0.04}deg)`;
-    }
-
-    function handleEnd() {
-      if (!isDragging) return;
-      isDragging = false;
-      const diffX = currentX - startX;
-      card.style.transition = 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-
-      if (diffX < -60) {
-        proximoAnimal();
-      } else if (diffX > 60) {
-        animalAnterior();
-      }
-
-      card.style.transform = 'translateX(0px) rotate(0deg)';
-      startX = 0;
-      currentX = 0;
-    }
-
-    card.addEventListener('mousedown', handleStart);
-    window.addEventListener('mousemove', handleMove);
-    window.addEventListener('mouseup', handleEnd);
-
-    card.addEventListener('touchstart', handleStart);
-    window.addEventListener('touchmove', handleMove);
-    window.addEventListener('touchend', handleEnd);
 
     preloadAllImages();
   </script>
