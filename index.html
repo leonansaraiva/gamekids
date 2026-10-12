@@ -9,8 +9,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#fed6e3">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/jpeg" href="imagens/cachorro.jpg">
-  <link rel="apple-touch-icon" href="imagens/cachorro.jpg">
+  <link rel="icon" type="image/jpeg" href="imagens/tubarao.jpg">
+  <link rel="apple-touch-icon" href="imagens/tubarao.jpg">
 
   <style>
     * {
@@ -22,7 +22,7 @@
     }
 
     body {
-      font-family: 'Comic Sans MS', 'Fredoka', 'Chilanka', cursive, sans-serif;
+      font-family: 'Fredoka One', 'Montserrat', 'Segoe UI', Arial, sans-serif;
       background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
       height: 100vh;
       height: 100dvh;
@@ -115,12 +115,12 @@
     }
 
     .item-name {
-      font-size: 3rem;
-      font-weight: 900;
-      color: #2c3e50;
+      font-size: 3.2rem;
+      font-weight: 800;
+      color: #2d3748;
       margin: 15px 0 10px 0;
-      text-transform: capitalize;
-      letter-spacing: 1px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
       text-align: center;
     }
 
@@ -200,16 +200,19 @@
   </div>
 
   <script>
-    const items = [
+   const items = [
       { name: 'Abelha', file: 'abelha.jpg' },
       { name: 'Arara', file: 'arara.jpg' },
+      { name: 'Baleia', file: 'baleia.jpg' },
       { name: 'Besouro', file: 'besouro.jpg' },
+      { name: 'Borboleta', file: 'borboleta.jpg' },
       { name: 'Cachorro', file: 'cachorro.jpg' },
       { name: 'Camelo', file: 'camelo.jpg' },
       { name: 'Canguru', file: 'canguru.jpg' },
+      { name: 'Caranguejo', file: 'caranguejo.jpg' },
       { name: 'Cavalo', file: 'cavalo.jpg' },
-            { name: 'Cobra', file: 'cobra.jpg' },
-
+      { name: 'Cavalo-marinho', file: 'cavalosmarinho.jpg' },
+      { name: 'Cobra', file: 'cobra.jpg' },
       { name: 'Coelho', file: 'coelho.jpg' },
       { name: 'Elefante', file: 'elefante.jpg' },
       { name: 'Formiga', file: 'formiga.jpg' },
@@ -218,16 +221,19 @@
       { name: 'Galo', file: 'galo.jpg' },
       { name: 'Gato', file: 'gato.jpg' },
       { name: 'Girafa', file: 'girafa.jpg' },
+      { name: 'Golfinho', file: 'golfinho.jpg' },
       { name: 'Gorila', file: 'gorila.jpg' },
       { name: 'Hipopótamo', file: 'hipopotamo.jpg' },
       { name: 'Jacaré', file: 'jacare.jpg' },
       { name: 'Joaninha', file: 'joaninha.jpg' },
       { name: 'Leão', file: 'leao.jpg' },
+      { name: 'Lula', file: 'lula.jpg' },
       { name: 'Macaco', file: 'macaco.jpg' },
       { name: 'Ovelha', file: 'ovelha.jpg' },
       { name: 'Papagaio', file: 'papagaio.jpg' },
       { name: 'Pato', file: 'pato.jpg' },
       { name: 'Pintinho', file: 'pintinho.jpg' },
+      { name: 'Polvo', file: 'polvo.jpg' },
       { name: 'Pombo', file: 'pombo.jpg' },
       { name: 'Porco', file: 'porco.jpg' },
       { name: 'Raposa', file: 'raposa.jpg' },
@@ -236,13 +242,13 @@
       { name: 'Sapo', file: 'sapo.jpg' },
       { name: 'Tartaruga', file: 'tartaruga.jpg' },
       { name: 'Tigre', file: 'tigre.jpg' },
+      { name: 'Tubarão', file: 'tubarao.jpg' },
       { name: 'Urso', file: 'urso.jpg' },
       { name: 'Vaca', file: 'vaca.jpg' },
       { name: 'Zebra', file: 'zebra.jpg' }
     ];
-
     let currentIndex = 0;
-    let isTransitioning = false; // <-- Trava anti-spam de cliques rápidos
+    let isTransitioning = false;
     
     const cardImg = document.getElementById('card-img');
     const cardName = document.getElementById('card-name');
@@ -252,24 +258,25 @@
 
     function preloadAllImages() {
       let loadedCount = 0;
+      const total = items.length;
+
+      function checkFinished() {
+        loadedCount++;
+        if (loadedCount === total) {
+          const screen = document.getElementById('loading-screen');
+          if (screen) {
+            screen.style.opacity = '0';
+            setTimeout(() => screen.remove(), 400);
+          }
+          renderCard(currentIndex);
+        }
+      }
+
       items.forEach(item => {
         const img = new Image();
         img.src = `imagens/${item.file}`;
-        img.onload = () => {
-          loadedCount++;
-          if (loadedCount === items.length) {
-            document.getElementById('loading-screen').style.opacity = '0';
-            setTimeout(() => document.getElementById('loading-screen').remove(), 400);
-            renderCard(currentIndex);
-          }
-        };
-        img.onerror = () => {
-          loadedCount++;
-          if (loadedCount === items.length) {
-            document.getElementById('loading-screen').remove();
-            renderCard(currentIndex);
-          }
-        };
+        img.onload = checkFinished;
+        img.onerror = checkFinished; // Garante que se faltar alguma imagem, o app abre mesmo assim
       });
     }
 
@@ -307,15 +314,14 @@
       cardName.textContent = item.name;
     }
 
-    // Navegação com trava para evitar cliques múltiplos muito rápidos
     function proximoAnimal() {
       if (isTransitioning) return;
       if (currentIndex < items.length - 1) {
         isTransitioning = true;
         currentIndex++;
-        playPopSound();
+        // Som de navegação removido para frente
         renderCard(currentIndex);
-        setTimeout(() => { isTransitioning = false; }, 150); // Libera o clique após 150ms
+        setTimeout(() => { isTransitioning = false; }, 150);
       }
     }
 
@@ -324,7 +330,7 @@
       if (currentIndex > 0) {
         isTransitioning = true;
         currentIndex--;
-        playPopSound();
+        // Som de navegação também removido para trás para manter a navegação silenciosa
         renderCard(currentIndex);
         setTimeout(() => { isTransitioning = false; }, 150);
       }
@@ -336,7 +342,7 @@
     speakBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       e.preventDefault();
-      playPopSound();
+      playPopSound(); // Mantém o som apenas ao clicar no botão de falar o nome do animal
       speakName(items[currentIndex].name);
     });
 
