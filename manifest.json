@@ -1,0 +1,9 @@
+{
+  "name": "GameKids Animais",
+  "short_name": "GameKids",
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "background_color": "#fed6e3",
+  "theme_color": "#fed6e3",
+  "icons": []
+}
