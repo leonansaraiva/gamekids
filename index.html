@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
   <title>GameKids - Animais</title>
   
-  <!-- Configurações para PWA / Instalação na Tela Inicial -->
+  <!-- Configurações para PWA / Atalho na Tela Inicial -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#fed6e3">
   <link rel="manifest" href="manifest.json">
+  <!-- Ícone para o atalho do navegador -->
+  <link rel="icon" type="image/jpeg" href="imagens/cachorro.jpg">
+  <link rel="apple-touch-icon" href="imagens/cachorro.jpg">
 
   <style>
     * {
@@ -35,14 +38,39 @@
 
     .game-container {
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       height: 92vh;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
-      padding: 15px;
+      padding: 10px;
       position: relative;
+    }
+
+    /* Botões de Navegação Lateral (Esquerda e Direita) */
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.85);
+      border: none;
+      border-radius: 50%;
+      width: 65px;
+      height: 65px;
+      font-size: 2.2rem;
+      color: #2c3e50;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      z-index: 10;
+      transition: transform 0.1s, background 0.2s;
+      outline: none;
+      flex-shrink: 0;
+    }
+
+    .nav-btn:active {
+      transform: scale(0.9);
+      background: rgba(255, 255, 255, 1);
     }
 
     .card-viewport {
@@ -53,6 +81,7 @@
       justify-content: center;
       position: relative;
       perspective: 1000px;
+      margin: 0 15px;
     }
 
     .card {
@@ -66,7 +95,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 30px;
+      padding: 25px;
       position: absolute;
       touch-action: none;
       cursor: grab;
@@ -98,7 +127,7 @@
     }
 
     .item-name {
-      font-size: 3.2rem;
+      font-size: 3rem;
       font-weight: 900;
       color: #2c3e50;
       margin: 15px 0 10px 0;
@@ -112,8 +141,8 @@
       color: white;
       border: none;
       border-radius: 60px;
-      padding: 18px 60px;
-      font-size: 3rem;
+      padding: 16px 50px;
+      font-size: 2.8rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -126,12 +155,11 @@
       transform: scale(0.92);
     }
 
-    /* Botão flutuante discreto para forçar tela cheia */
     .fullscreen-btn {
       position: fixed;
       top: 15px;
       right: 15px;
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.85);
       border: none;
       border-radius: 50%;
       width: 45px;
@@ -142,7 +170,6 @@
       z-index: 100;
     }
 
-    /* Tela de carregamento inicial para garantir que as imagens já estão prontas */
     #loading-screen {
       position: fixed;
       inset: 0;
@@ -166,6 +193,9 @@
   <button class="fullscreen-btn" id="fs-btn" title="Tela Cheia">⛶</button>
 
   <div class="game-container">
+    <!-- Botão Esquerda -->
+    <button class="nav-btn" id="prev-btn" title="Anterior">◀</button>
+
     <div class="card-viewport" id="viewport">
       <div class="card" id="card">
         <div class="image-frame">
@@ -178,6 +208,9 @@
         </button>
       </div>
     </div>
+
+    <!-- Botão Direita -->
+    <button class="nav-btn" id="next-btn" title="Próximo">▶</button>
   </div>
 
   <script>
@@ -221,13 +254,13 @@
     ];
 
     let currentIndex = 0;
-    const preloadedImages = {};
     const card = document.getElementById('card');
     const cardImg = document.getElementById('card-img');
     const cardName = document.getElementById('card-name');
     const speakBtn = document.getElementById('speak-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
 
-    // Pré-carrega todas as imagens na memória para evitar qualquer delay ou travamento
     function preloadAllImages() {
       let loadedCount = 0;
       items.forEach(item => {
@@ -236,20 +269,18 @@
         img.onload = () => {
           loadedCount++;
           if (loadedCount === items.length) {
-            // Esconde a tela de carregamento quando tudo estiver pronto na memória
             document.getElementById('loading-screen').style.opacity = '0';
             setTimeout(() => document.getElementById('loading-screen').remove(), 400);
             renderCard(currentIndex);
           }
         };
         img.onerror = () => {
-          loadedCount++; // Conta mesmo se der erro para não travar a tela
+          loadedCount++;
           if (loadedCount === items.length) {
             document.getElementById('loading-screen').remove();
             renderCard(currentIndex);
           }
         };
-        preloadedImages[item.file] = img;
       });
     }
 
@@ -287,6 +318,26 @@
       cardName.textContent = item.name;
     }
 
+    // Funções de navegação por botões
+    function proximoAnimal() {
+      if (currentIndex < items.length - 1) {
+        currentIndex++;
+        playPopSound();
+        renderCard(currentIndex);
+      }
+    }
+
+    function animalAnterior() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        playPopSound();
+        renderCard(currentIndex);
+      }
+    }
+
+    nextBtn.addEventListener('click', proximoAnimal);
+    prevBtn.addEventListener('click', animalAnterior);
+
     speakBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       e.preventDefault();
@@ -294,7 +345,6 @@
       speakName(items[currentIndex].name);
     });
 
-    // Botão de Tela Cheia Manual
     document.getElementById('fs-btn').addEventListener('click', () => {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
@@ -305,13 +355,13 @@
       }
     });
 
-    // Controle de Arrastar (Swipe)
+    // Controle de Arrastar (Swipe) mantido para complementar
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
 
     function handleStart(e) {
-      if (e.target.closest('#speak-btn') || e.target.closest('#fs-btn')) return;
+      if (e.target.closest('#speak-btn') || e.target.closest('#fs-btn') || e.target.closest('.nav-btn')) return;
       isDragging = true;
       startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
       card.style.transition = 'none';
@@ -330,14 +380,10 @@
       const diffX = currentX - startX;
       card.style.transition = 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
-      if (diffX < -60 && currentIndex < items.length - 1) {
-        currentIndex++;
-        playPopSound();
-        renderCard(currentIndex);
-      } else if (diffX > 60 && currentIndex > 0) {
-        currentIndex--;
-        playPopSound();
-        renderCard(currentIndex);
+      if (diffX < -60) {
+        proximoAnimal();
+      } else if (diffX > 60) {
+        animalAnterior();
       }
 
       card.style.transform = 'translateX(0px) rotate(0deg)';
@@ -353,7 +399,6 @@
     window.addEventListener('touchmove', handleMove);
     window.addEventListener('touchend', handleEnd);
 
-    // Inicia o pré-carregamento ao abrir
     preloadAllImages();
   </script>
 </body>
