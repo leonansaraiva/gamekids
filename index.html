@@ -1,317 +1,461 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sons e Nomes dos Animais</title>
-    <!-- Tailwind CSS para estilização rápida e responsiva -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome para ícones divertidos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts - Fredoka (Fonte arredondada e infantil) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Fredoka', cursive, sans-serif;
-            touch-action: pan-y;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Cards Infantis</title>
 
-        /* Animações e efeitos dos cards */
-        .card-bounce {
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700;800&display=swap" rel="stylesheet">
 
-        .btn-pulse {
-            animation: pulse-light 2s infinite;
-        }
+<style>
+  * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  html, body { height: 100%; overscroll-behavior: none; }
+  body {
+    font-family: 'Fredoka', cursive, sans-serif;
+    touch-action: manipulation;
+    overflow: hidden;
+    background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%);
+  }
+  .card-shadow {
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,.25), 0 0 0 8px rgba(255,255,255,.8);
+  }
+  .btn-bounce { transition: transform .1s ease, box-shadow .1s ease; }
+  .btn-bounce:active { transform: scale(.92) !important; }
 
-        @keyframes pulse-light {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+  @keyframes sound-wave {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.05) rotate(1deg); }
+    100% { transform: scale(1); }
+  }
+  .anim-playing { animation: sound-wave .3s ease-in-out infinite; }
 
-        .speech-active {
-            animation: bounce-speaking 0.5s infinite alternate;
-        }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        @keyframes bounce-speaking {
-            from { transform: translateY(0); }
-            to { transform: translateY(-10px); }
-        }
-
-        /* Ocultar barra de rolagem */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+  /* Área de arraste: NÃO deixa o navegador capturar o gesto */
+  #card-stage { touch-action: none; }
+</style>
 </head>
-<body class="bg-gradient-to-b from-sky-300 via-indigo-200 to-purple-300 min-h-screen flex flex-col justify-between items-center p-3 md:p-6 overflow-x-hidden select-none">
+<body class="min-h-screen flex flex-col justify-between items-center p-2 sm:p-4 select-none">
 
-    <!-- Cabeçalho -->
-    <header class="w-full max-w-2xl text-center py-2 flex justify-between items-center px-4">
-        <div class="flex items-center gap-2">
-            <span class="text-3xl md:text-4xl">🐾</span>
-            <h1 class="text-2xl md:text-4xl font-bold text-indigo-900 tracking-wide drop-shadow-md">
-                Mundo Animal
-            </h1>
+<main class="w-full max-w-lg my-auto flex flex-col items-center relative">
+
+  <!-- Stage do Card (Arrastável) -->
+  <div id="card-stage" class="w-full relative touch-none cursor-grab active:cursor-grabbing px-2 py-1">
+
+    <div id="item-card" class="card-shadow bg-white rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-between min-h-[460px] sm:min-h-[520px] transition-transform duration-100 ease-out relative will-change-transform">
+
+      <div class="w-full flex justify-end items-center px-1">
+        <span id="card-counter" class="bg-amber-100 text-amber-900 font-extrabold px-3 py-1 rounded-full text-xs sm:text-sm">1 / 16</span>
+      </div>
+
+      <div class="w-full grid grid-cols-2 gap-3 my-2 items-center justify-center">
+        <div class="flex flex-col items-center justify-center bg-amber-50 rounded-2xl p-3 border-2 border-amber-200 h-36 sm:h-44 shadow-inner">
+          <span id="item-emoji" class="text-6xl sm:text-7xl drop-shadow-md">🐶</span>
+          <span class="text-xs font-bold text-amber-800/60 uppercase mt-1">Desenho</span>
         </div>
-        <button id="toggle-auto-speak" class="bg-white/80 backdrop-blur text-indigo-800 font-semibold px-3 py-1.5 rounded-full shadow text-xs md:text-sm flex items-center gap-2 hover:bg-white transition">
-            <i class="fas fa-volume-up text-indigo-600"></i>
-            <span id="auto-speak-status">Fala ao Mudar: SIM</span>
+
+        <div class="relative bg-slate-100 rounded-2xl overflow-hidden border-2 border-slate-200 h-36 sm:h-44 shadow-inner flex items-center justify-center">
+          <img id="item-photo" src="" alt="Foto Real"
+               class="w-full h-full object-cover transition-opacity duration-300"
+               onerror="this.src='https://placehold.co/400x400/3b82f6/ffffff?text=Carregando...'"/>
+          <span class="absolute bottom-1 right-2 text-[10px] font-bold text-white bg-black/50 px-2 py-0.5 rounded-full uppercase backdrop-blur-sm">Foto Real</span>
+        </div>
+      </div>
+
+      <h2 id="item-name" class="text-3xl sm:text-5xl font-black text-slate-800 tracking-wider my-2 uppercase text-center">CACHORRO</h2>
+
+      <div class="w-full grid grid-cols-2 gap-3 sm:gap-4 mt-2">
+        <button id="btn-speak" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white font-extrabold py-3 sm:py-4 px-2 rounded-2xl shadow-lg flex flex-col items-center justify-center gap-1 border-b-4 border-emerald-700">
+          <i class="fas fa-comment-dots text-3xl sm:text-4xl"></i>
+          <span class="text-sm sm:text-base tracking-wide uppercase">NOME</span>
         </button>
-    </header>
 
-    <!-- Conteúdo Principal - Card Central -->
-    <main class="w-full max-w-md my-auto flex flex-col items-center justify-center">
-        
-        <!-- Área do Card Interativo -->
-        <div id="card-container" class="w-full relative touch-pan-x">
-            
-            <div id="animal-card" class="card-bounce bg-white rounded-3xl p-6 shadow-2xl border-4 border-white flex flex-col items-center text-center relative overflow-hidden min-h-[380px] justify-between">
-                
-                <!-- Indicador de Posição/Total -->
-                <span id="card-counter" class="absolute top-4 right-4 bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-full text-sm">
-                    1 / 15
-                </span>
+        <button id="btn-sound" class="btn-bounce bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-extrabold py-3 sm:py-4 px-2 rounded-2xl shadow-lg flex flex-col items-center justify-center gap-1 border-b-4 border-amber-700">
+          <i class="fas fa-volume-high text-3xl sm:text-4xl"></i>
+          <span class="text-sm sm:text-base tracking-wide uppercase">SOM</span>
+        </button>
+      </div>
 
-                <!-- Ilustração do Animal -->
-                <div id="animal-avatar-container" class="w-48 h-48 md:w-56 md:h-56 my-2 rounded-2xl flex items-center justify-center bg-gradient-to-b transition-all duration-300 transform">
-                    <span id="animal-emoji" class="text-8xl md:text-9xl filter drop-shadow-lg transition-transform duration-300">
-                        🐔
-                    </span>
-                </div>
+    </div>
+  </div>
 
-                <!-- Nome do Animal em Destaque -->
-                <div class="w-full">
-                    <h2 id="animal-name" class="text-4xl md:text-5xl font-black text-slate-800 tracking-wider mb-4 uppercase drop-shadow-sm">
-                        GALINHA
-                    </h2>
+  <div class="w-full flex justify-between items-center gap-4 mt-3 px-2">
+    <button id="btn-prev" class="btn-bounce flex-1 bg-white/90 hover:bg-white text-indigo-900 font-extrabold py-3 sm:py-4 rounded-2xl shadow-xl flex items-center justify-center gap-2 text-lg sm:text-xl border-b-4 border-slate-300">
+      <i class="fas fa-chevron-left text-2xl"></i>
+      <span>ANTERIOR</span>
+    </button>
 
-                    <!-- Botão de Ouvir o Nome -->
-                    <button id="btn-speak" class="btn-pulse w-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-bold py-4 px-6 rounded-2xl shadow-lg flex items-center justify-center gap-3 text-xl md:text-2xl transition duration-150 border-b-4 border-emerald-700">
-                        <i class="fas fa-volume-high text-2xl md:text-3xl"></i>
-                        <span>OUVIR NOME</span>
-                    </button>
-                </div>
+    <button id="btn-next" class="btn-bounce flex-1 bg-amber-400 hover:bg-amber-300 text-amber-950 font-extrabold py-3 sm:py-4 rounded-2xl shadow-xl flex items-center justify-center gap-2 text-lg sm:text-xl border-b-4 border-amber-600">
+      <span>PRÓXIMO</span>
+      <i class="fas fa-chevron-right text-2xl"></i>
+    </button>
+  </div>
+</main>
 
-            </div>
+<footer class="w-full max-w-lg mt-2">
+  <div id="thumbnails-bar" class="flex gap-2 overflow-x-auto no-scrollbar py-2 px-3 bg-white/30 backdrop-blur-md rounded-2xl border border-white/40"></div>
+</footer>
 
-        </div>
+<script>
+/* =========================================================
+   BASE DE DADOS
+   - photo: Unsplash (foto real)
+   - audio: som real do animal (Wikimedia Commons / gratuitos)
+   - fallback: tipo de som sintetizado caso o áudio falhe
+   ========================================================= */
+const database = [
+  {
+    id:'cachorro', name:'Cachorro', emoji:'🐶',
+    photo:'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/2/2f/Dog_barking.ogg',
+    fallback:'bark'
+  },
+  {
+    id:'gato', name:'Gato', emoji:'🐱',
+    photo:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/1/1a/Cat_meow.ogg',
+    fallback:'meow'
+  },
+  {
+    id:'galinha', name:'Galinha', emoji:'🐔',
+    photo:'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/6/6b/Chicken_clucking.ogg',
+    fallback:'cluck'
+  },
+  {
+    id:'pintinho', name:'Pintinho', emoji:'🐤',
+    photo:'https://images.unsplash.com/photo-1598965402089-897ce52e8355?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/0/0a/Chick_chirp.ogg',
+    fallback:'peep'
+  },
+  {
+    id:'vaca', name:'Vaca', emoji:'🐮',
+    photo:'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/8/80/Cow_moo.ogg',
+    fallback:'moo'
+  },
+  {
+    id:'porco', name:'Porco', emoji:'🐷',
+    photo:'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/9/9b/Pig_grunt.ogg',
+    fallback:'oink'
+  },
+  {
+    id:'ovelha', name:'Ovelha', emoji:'🐑',
+    photo:'https://images.unsplash.com/photo-1484557052118-f32bd25b45b5?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/7/7c/Sheep_bleat.ogg',
+    fallback:'baa'
+  },
+  {
+    id:'pato', name:'Pato', emoji:'🦆',
+    photo:'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/3/3a/Duck_quack.ogg',
+    fallback:'quack'
+  },
+  {
+    id:'leao', name:'Leão', emoji:'🦁',
+    photo:'https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/1/1c/Lion_roar.ogg',
+    fallback:'roar'
+  },
+  {
+    id:'elefante', name:'Elefante', emoji:'🐘',
+    photo:'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/5/5c/Elephant_trumpet.ogg',
+    fallback:'trumpet'
+  },
+  {
+    id:'macaco', name:'Macaco', emoji:'🐵',
+    photo:'https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/9/9b/Monkey_sound.ogg',
+    fallback:'monkey'
+  },
+  {
+    id:'sapo', name:'Sapo', emoji:'🐸',
+    photo:'https://images.unsplash.com/photo-1559253664-ca249d4608c6?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/6/6e/Frog_croak.ogg',
+    fallback:'croak'
+  },
+  {
+    id:'passaro', name:'Pássaro', emoji:'🐦',
+    photo:'https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/4/4b/Bird_song.ogg',
+    fallback:'tweet'
+  },
+  {
+    id:'abelha', name:'Abelha', emoji:'🐝',
+    photo:'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/6/6b/Bee_buzz.ogg',
+    fallback:'buzz'
+  },
+  {
+    id:'carro', name:'Carro', emoji:'🚗',
+    photo:'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/9/9d/Car_horn.ogg',
+    fallback:'honk'
+  },
+  {
+    id:'trem', name:'Trem', emoji:'🚂',
+    photo:'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=500&q=80',
+    audio:'https://upload.wikimedia.org/wikipedia/commons/1/1c/Train_whistle.ogg',
+    fallback:'train'
+  }
+];
 
-        <!-- Botões Grandes de Navegação (Anterior / Próximo) -->
-        <div class="w-full flex justify-between items-center gap-4 mt-6">
-            <button id="btn-prev" class="flex-1 bg-amber-400 hover:bg-amber-500 active:scale-95 text-amber-950 font-bold py-4 px-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-xl md:text-2xl border-b-4 border-amber-600 transition">
-                <i class="fas fa-arrow-left"></i>
-                <span>ANTERIOR</span>
-            </button>
+/* =========================================================
+   ELEMENTOS
+   ========================================================= */
+let currentIndex = 0;
 
-            <button id="btn-next" class="flex-1 bg-sky-500 hover:bg-sky-600 active:scale-95 text-white font-bold py-4 px-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-xl md:text-2xl border-b-4 border-sky-700 transition">
-                <span>PRÓXIMO</span>
-                <i class="fas fa-arrow-right"></i>
-            </button>
-        </div>
+const stage        = document.getElementById('card-stage');
+const card         = document.getElementById('item-card');
+const itemEmoji    = document.getElementById('item-emoji');
+const itemPhoto    = document.getElementById('item-photo');
+const itemName     = document.getElementById('item-name');
+const cardCounter  = document.getElementById('card-counter');
+const thumbnailsBar= document.getElementById('thumbnails-bar');
 
-    </main>
+const btnSpeak = document.getElementById('btn-speak');
+const btnSound = document.getElementById('btn-sound');
+const btnPrev  = document.getElementById('btn-prev');
+const btnNext  = document.getElementById('btn-next');
 
-    <!-- Miniaturas Rápidas no Rodapé -->
-    <footer class="w-full max-w-2xl mt-4">
-        <div id="thumbnails-container" class="flex gap-2 overflow-x-auto no-scrollbar py-2 px-2">
-            <!-- As miniaturas serão inseridas via JavaScript -->
-        </div>
-    </footer>
+/* =========================================================
+   ÁUDIO REAL (com fallback sintetizado)
+   ========================================================= */
+let currentAudio = null;
 
-    <script>
-        /* Lista de Animais com nomes, emojis e cores de fundo */
-        const animals = [
-            { id: 'galinha', name: 'GALINHA', emoji: '🐔', bg: 'from-amber-100 to-amber-200' },
-            { id: 'jacare', name: 'JACARÉ', emoji: '🐊', bg: 'from-emerald-100 to-emerald-200' },
-            { id: 'cachorro', name: 'CACHORRO', emoji: '🐶', bg: 'from-orange-100 to-orange-200' },
-            { id: 'gato', name: 'GATO', emoji: '🐱', bg: 'from-yellow-100 to-yellow-200' },
-            { id: 'cobra', name: 'COBRA', emoji: '🐍', bg: 'from-green-100 to-green-200' },
-            { id: 'coelho', name: 'COELHO', emoji: '🐰', bg: 'from-pink-100 to-pink-200' },
-            { id: 'ovelha', name: 'OVELHA', emoji: '🐑', bg: 'from-slate-100 to-slate-200' },
-            { id: 'passarinho', name: 'PASSARINHO', emoji: '🐦', bg: 'from-sky-100 to-sky-200' },
-            { id: 'abelha', name: 'ABELHA', emoji: '🐝', bg: 'from-amber-200 to-yellow-300' },
-            { id: 'tatu', name: 'TATU', emoji: '🦔', bg: 'from-stone-100 to-stone-200' },
-            { id: 'elefante', name: 'ELEFANTE', emoji: '🐘', bg: 'from-blue-100 to-blue-200' },
-            { id: 'girafa', name: 'GIRAFA', emoji: '🦒', bg: 'from-amber-100 to-orange-200' },
-            { id: 'leao', name: 'LEÃO', emoji: '🦁', bg: 'from-orange-200 to-amber-300' },
-            { id: 'macaco', name: 'MACACO', emoji: '🐒', bg: 'from-amber-200 to-stone-300' },
-            { id: 'pato', name: 'PATO', emoji: '🦆', bg: 'from-teal-100 to-teal-200' }
-        ];
+function playRealSound(item) {
+  // para qualquer áudio em andamento
+  if (currentAudio) {
+    try { currentAudio.pause(); } catch(e) {}
+    currentAudio = null;
+  }
 
-        let currentIndex = 0;
-        let autoSpeak = true;
+  const audio = new Audio(item.audio);
+  audio.preload = 'auto';
+  audio.volume = 0.9;
+  currentAudio = audio;
 
-        // Elementos da Interface
-        const cardElement = document.getElementById('animal-card');
-        const emojiElement = document.getElementById('animal-emoji');
-        const avatarContainer = document.getElementById('animal-avatar-container');
-        const nameElement = document.getElementById('animal-name');
-        const counterElement = document.getElementById('card-counter');
-        const btnSpeak = document.getElementById('btn-speak');
-        const btnPrev = document.getElementById('btn-prev');
-        const btnNext = document.getElementById('btn-next');
-        const thumbnailsContainer = document.getElementById('thumbnails-container');
-        const btnToggleAutoSpeak = document.getElementById('toggle-auto-speak');
-        const autoSpeakStatus = document.getElementById('auto-speak-status');
+  audio.addEventListener('error', () => {
+    console.warn('Falha ao tocar som real, usando fallback:', item.id);
+    playFallbackSound(item.fallback);
+  }, { once:true });
 
-        // Função para Falar o Nome do Animal (Web Speech API)
-        function speakName(text) {
-            if ('speechSynthesis' in window) {
-                // Cancela falas anteriores pendentes
-                window.speechSynthesis.cancel();
+  audio.play().catch(err => {
+    console.warn('Autoplay bloqueado, tentando fallback:', err);
+    playFallbackSound(item.fallback);
+  });
 
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'pt-BR';
-                utterance.rate = 0.85; // Velocidade um pouco mais pausada para crianças
-                utterance.pitch = 1.1;  // Tom levemente mais agudo/amigável
+  card.classList.add('anim-playing');
+  audio.addEventListener('ended', () => card.classList.remove('anim-playing'), { once:true });
+}
 
-                // Efeito visual enquanto fala
-                utterance.onstart = () => {
-                    avatarContainer.classList.add('speech-active');
-                    btnSpeak.classList.add('bg-emerald-600');
-                };
+/* Fallback simples (síntese) — só se o áudio real falhar */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function getAudioContext() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
 
-                utterance.onend = () => {
-                    avatarContainer.classList.remove('speech-active');
-                    btnSpeak.classList.remove('bg-emerald-600');
-                };
+function playFallbackSound(type) {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
 
-                utterance.onerror = () => {
-                    avatarContainer.classList.remove('speech-active');
-                    btnSpeak.classList.remove('bg-emerald-600');
-                };
+  const makeTone = (freq, dur, type='sine', vol=0.3, delay=0) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, now + delay);
+    gain.gain.setValueAtTime(vol, now + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now + delay); osc.stop(now + delay + dur);
+  };
 
-                window.speechSynthesis.speak(utterance);
-            }
-        }
+  if (type === 'bark')      { makeTone(160,0.15,'sawtooth',0.4,0);   makeTone(160,0.15,'sawtooth',0.4,0.22); }
+  else if (type === 'meow') { makeTone(600,0.5,'sine',0.3,0); }
+  else if (type === 'moo')  { makeTone(110,0.9,'sawtooth',0.35,0); }
+  else if (type === 'cluck'){ makeTone(320,0.1,'triangle',0.3,0); makeTone(320,0.1,'triangle',0.3,0.15); }
+  else if (type === 'peep') { makeTone(2400,0.1,'sine',0.25,0); makeTone(2400,0.1,'sine',0.25,0.2); }
+  else if (type === 'quack'){ makeTone(280,0.25,'sawtooth',0.3,0); }
+  else if (type === 'roar') { makeTone(90,0.8,'sawtooth',0.4,0); }
+  else if (type === 'honk') { makeTone(420,0.15,'square',0.2,0); makeTone(420,0.15,'square',0.2,0.2); }
+  else if (type === 'train'){ makeTone(523,0.7,'sine',0.25,0); makeTone(659,0.7,'sine',0.25,0); }
+  else                       { makeTone(440,0.25,'sine',0.3,0); }
+}
 
-        function updateCard(index) {
-            const animal = animals[index];
+/* =========================================================
+   FALA DO NOME
+   ========================================================= */
+function speakItemName(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'pt-BR';
+  utter.rate = 0.85;
+  utter.pitch = 1.15;
+  card.classList.add('anim-playing');
+  utter.onend   = () => card.classList.remove('anim-playing');
+  utter.onerror = () => card.classList.remove('anim-playing');
+  window.speechSynthesis.speak(utter);
+}
 
-            // Animação leve ao trocar de card
-            cardElement.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                cardElement.style.transform = 'scale(1)';
-            }, 150);
+/* =========================================================
+   RENDER
+   ========================================================= */
+function renderCard() {
+  const item = database[currentIndex];
+  itemEmoji.textContent = item.emoji;
+  itemPhoto.src = item.photo;
+  itemName.textContent = item.name;
+  cardCounter.textContent = `${currentIndex + 1} / ${database.length}`;
 
-            // Atualiza dados na tela
-            emojiElement.textContent = animal.emoji;
-            nameElement.textContent = animal.name;
-            counterElement.textContent = `${index + 1} / ${animals.length}`;
+  // pré-carrega o áudio do próximo card para tocar mais rápido
+  const next = database[(currentIndex + 1) % database.length];
+  if (next && next.audio) { const a = new Audio(next.audio); a.preload = 'auto'; }
 
-            // Atualiza classe de gradiente de fundo do avatar
-            avatarContainer.className = `w-48 h-48 md:w-56 md:h-56 my-2 rounded-2xl flex items-center justify-center bg-gradient-to-b ${animal.bg} transition-all duration-300 transform shadow-inner`;
+  updateThumbnails();
+  // fala o nome automaticamente (pode ser bloqueado até o primeiro toque)
+  speakItemName(item.name);
+}
 
-            // Atualiza destaque na lista de miniaturas
-            updateThumbnails();
+function updateThumbnails() {
+  thumbnailsBar.innerHTML = '';
+  database.forEach((item, index) => {
+    const btn = document.createElement('button');
+    btn.className = `flex-shrink-0 w-12 h-12 rounded-xl text-2xl flex items-center justify-center transition-all ${
+      index === currentIndex ? 'bg-amber-400 scale-110 shadow-lg border-2 border-white' : 'bg-white/70 opacity-70'
+    }`;
+    btn.textContent = item.emoji;
+    btn.onclick = () => { currentIndex = index; renderCard(); };
+    thumbnailsBar.appendChild(btn);
+  });
+  const active = thumbnailsBar.children[currentIndex];
+  if (active) active.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+}
 
-            // Fala o nome se a opção estiver ativada
-            if (autoSpeak) {
-                speakName(animal.name);
-            }
-        }
+/* =========================================================
+   NAVEGAÇÃO
+   ========================================================= */
+function nextCard() {
+  card.style.transform = 'translateX(-100%) rotate(-8deg)';
+  setTimeout(() => {
+    currentIndex = (currentIndex + 1) % database.length;
+    card.style.transition = 'none';
+    card.style.transform = 'translateX(100%) rotate(8deg)';
+    renderCard();
+    setTimeout(() => {
+      card.style.transition = 'transform .25s ease-out';
+      card.style.transform = 'translateX(0) rotate(0)';
+    }, 20);
+  }, 180);
+}
 
-        function renderThumbnails() {
-            thumbnailsContainer.innerHTML = '';
-            animals.forEach((animal, index) => {
-                const thumb = document.createElement('button');
-                thumb.className = `flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-2xl text-2xl md:text-3xl flex items-center justify-center transition shadow-md ${
-                    index === currentIndex ? 'bg-white border-4 border-indigo-500 scale-110' : 'bg-white/70 opacity-80'
-                }`;
-                thumb.innerHTML = animal.emoji;
-                thumb.onclick = () => {
-                    currentIndex = index;
-                    updateCard(currentIndex);
-                };
-                thumbnailsContainer.appendChild(thumb);
-            });
-        }
+function prevCard() {
+  card.style.transform = 'translateX(100%) rotate(8deg)';
+  setTimeout(() => {
+    currentIndex = (currentIndex - 1 + database.length) % database.length;
+    card.style.transition = 'none';
+    card.style.transform = 'translateX(-100%) rotate(-8deg)';
+    renderCard();
+    setTimeout(() => {
+      card.style.transition = 'transform .25s ease-out';
+      card.style.transform = 'translateX(0) rotate(0)';
+    }, 20);
+  }, 180);
+}
 
-        function updateThumbnails() {
-            const buttons = thumbnailsContainer.children;
-            for (let i = 0; i < buttons.length; i++) {
-                if (i === currentIndex) {
-                    buttons[i].className = 'flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-2xl text-2xl md:text-3xl flex items-center justify-center transition shadow-md bg-white border-4 border-indigo-500 scale-110';
-                    buttons[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                } else {
-                    buttons[i].className = 'flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-2xl text-2xl md:text-3xl flex items-center justify-center transition shadow-md bg-white/70 opacity-80';
-                }
-            }
-        }
+/* =========================================================
+   ARRASTE (Pointer Events — funciona em tablet, mouse e toque)
+   ========================================================= */
+let startX = 0, currentX = 0, isDragging = false, pointerId = null;
 
-        // Suporte para Swipe / Deslizar no Tablet
-        let touchStartX = 0;
-        let touchEndX = 0;
+function onPointerDown(e) {
+  // só inicia o arraste se for o card/stage (não os botões)
+  if (e.target.closest('button')) return;
+  isDragging = true;
+  pointerId = e.pointerId;
+  startX = e.clientX;
+  currentX = 0;
+  card.style.transition = 'none';
+  stage.setPointerCapture?.(e.pointerId);
+}
 
-        const cardContainer = document.getElementById('card-container');
+function onPointerMove(e) {
+  if (!isDragging || e.pointerId !== pointerId) return;
+  currentX = e.clientX - startX;
+  card.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.04}deg)`;
+}
 
-        cardContainer.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
+function onPointerUp(e) {
+  if (!isDragging || (pointerId !== null && e.pointerId !== pointerId)) return;
+  isDragging = false;
+  pointerId = null;
+  card.style.transition = 'transform .25s ease-out';
 
-        cardContainer.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, { passive: true });
+  const threshold = 70;
+  if (currentX < -threshold)      nextCard();
+  else if (currentX > threshold)  prevCard();
+  else                            card.style.transform = 'translateX(0) rotate(0)';
+  currentX = 0;
+}
 
-        function handleSwipe() {
-            const swipeThreshold = 50; // distância mínima para considerar swipe
-            if (touchEndX < touchStartX - swipeThreshold) {
-                // Deslizou para a esquerda -> Próximo
-                nextAnimal();
-            } else if (touchEndX > touchStartX + swipeThreshold) {
-                // Deslizou para a direita -> Anterior
-                prevAnimal();
-            }
-        }
+stage.addEventListener('pointerdown', onPointerDown);
+stage.addEventListener('pointermove', onPointerMove);
+stage.addEventListener('pointerup', onPointerUp);
+stage.addEventListener('pointercancel', onPointerUp);
+stage.addEventListener('pointerleave', onPointerUp);
 
-        // Navegação
-        function nextAnimal() {
-            currentIndex = (currentIndex + 1) % animals.length;
-            updateCard(currentIndex);
-        }
+/* Bloqueia gestos de scroll/zoom da página no stage (tablet) */
+stage.addEventListener('touchmove', e => e.preventDefault(), { passive:false });
+stage.addEventListener('gesturestart', e => e.preventDefault());
 
-        function prevAnimal() {
-            currentIndex = (currentIndex - 1 + animals.length) % animals.length;
-            updateCard(currentIndex);
-        }
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+btnNext.addEventListener('click', nextCard);
+btnPrev.addEventListener('click', prevCard);
 
-        btnNext.addEventListener('click', nextAnimal);
-        btnPrev.addEventListener('click', prevAnimal);
-        btnSpeak.addEventListener('click', () => {
-            speakName(animals[currentIndex].name);
-        });
+btnSpeak.addEventListener('click', () => {
+  speakItemName(database[currentIndex].name);
+});
 
-        // Toggle Auto-Fala
-        btnToggleAutoSpeak.addEventListener('click', () => {
-            autoSpeak = !autoSpeak;
-            autoSpeakStatus.textContent = `Fala ao Mudar: ${autoSpeak ? 'SIM' : 'NÃO'}`;
-        });
+btnSound.addEventListener('click', () => {
+  playRealSound(database[currentIndex]);
+});
 
-        // Suporte a setas do teclado (para testes no computador)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') nextAnimal();
-            if (e.key === 'ArrowLeft') prevAnimal();
-            if (e.key === ' ' || e.key === 'Enter') speakName(animals[currentIndex].name);
-        });
+/* Teclado (desktop) */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft')  prevCard();
+  if (e.key === ' ')          { e.preventDefault(); speakItemName(database[currentIndex].name); }
+});
 
-        // Inicialização do aplicativo
-        window.onload = () => {
-            renderThumbnails();
-            // Primeira renderização
-            updateCard(currentIndex);
-        };
-    </script>
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+window.addEventListener('load', () => {
+  renderCard();
+
+  // Desbloqueia o áudio no primeiro toque (política de autoplay dos tablets)
+  const unlock = () => {
+    try {
+      const a = new Audio();
+      a.play().catch(()=>{});
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e){}
+    document.removeEventListener('pointerdown', unlock);
+  };
+  document.addEventListener('pointerdown', unlock, { once:true });
+});
+</script>
 </body>
 </html>
