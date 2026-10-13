@@ -24,6 +24,7 @@
     body {
       font-family: 'Fredoka One', 'Montserrat', 'Segoe UI', Arial, sans-serif;
       background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      width: 100vw;
       height: 100vh;
       height: 100dvh;
       display: flex;
@@ -31,12 +32,14 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      position: fixed;
     }
 
     .game-container {
       width: 100%;
-      max-width: 650px;
-      height: 92vh;
+      max-width: 700px;
+      height: 95vh;
+      height: 95dvh;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -45,49 +48,25 @@
       position: relative;
     }
 
-    /* Botão Voltar (Azul) */
-    .nav-btn-prev {
-      background: rgba(52, 152, 219, 0.85);
-      border: none;
-      border-radius: 50%;
-      width: 65px;
-      height: 65px;
-      font-size: 2.2rem;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      z-index: 10;
-      transition: transform 0.1s, background 0.2s;
-      outline: none;
-      flex-shrink: 0;
-    }
-
-    .nav-btn-prev:active {
-      transform: scale(0.9);
-      background: rgba(41, 128, 185, 1);
-    }
-
-    /* Botão Avançar (Verde e Maior) */
+    /* Botão Avançar (Verde bem grande e intuitivo à direita) */
     .nav-btn-next {
-      background: rgba(46, 204, 113, 0.9);
+      background: rgba(46, 204, 113, 0.95);
       border: none;
       border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      font-size: 2.8rem;
+      width: 85px;
+      height: 85px;
+      font-size: 3rem;
       color: white;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+      box-shadow: 0 10px 25px rgba(46, 204, 113, 0.5);
       z-index: 10;
-      transition: transform 0.1s, background 0.2s;
+      transition: transform 0.1s, background 0.2s, opacity 0.2s;
       outline: none;
       flex-shrink: 0;
+      margin-left: 10px;
     }
 
     .nav-btn-next:active {
@@ -95,9 +74,9 @@
       background: rgba(39, 174, 96, 1);
     }
 
-    /* Estilo quando o botão de avançar estiver bloqueado */
+    /* Estilo quando o botão de avançar estiver bloqueado até ouvir o som */
     .nav-btn-next.locked {
-      opacity: 0.4;
+      opacity: 0.35;
       cursor: not-allowed;
       transform: none !important;
     }
@@ -109,49 +88,51 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      margin: 0 15px;
+      flex: 1;
     }
 
     .card {
       width: 100%;
       height: 100%;
-      max-height: 720px;
+      max-height: 85vh;
+      max-height: 85dvh;
       background: #ffffff;
-      border-radius: 40px;
+      border-radius: 35px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 25px;
+      padding: 20px;
       position: absolute;
-      border: 10px solid #fff;
+      border: 8px solid #fff;
     }
 
     .image-frame {
       width: 100%;
       flex: 1;
-      border-radius: 30px;
+      border-radius: 25px;
       overflow: hidden;
       background-color: #f7f9fc;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+      min-height: 0;
     }
 
     .image-frame img {
-      width: 100%;
-      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
       pointer-events: none;
     }
 
     .item-name {
-      font-size: 3.2rem;
+      font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 800;
       color: #2d3748;
-      margin: 15px 0 10px 0;
+      margin: 10px 0;
       text-transform: uppercase;
       letter-spacing: 2px;
       text-align: center;
@@ -162,14 +143,16 @@
       color: white;
       border: none;
       border-radius: 60px;
-      padding: 16px 50px;
-      font-size: 2.8rem;
+      padding: 14px 40px;
+      font-size: clamp(2.2rem, 5vw, 2.8rem);
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
       cursor: pointer;
       outline: none;
+      width: 80%;
+      max-width: 320px;
     }
 
     .speak-button:active {
@@ -178,14 +161,14 @@
 
     .fullscreen-btn {
       position: fixed;
-      top: 15px;
-      right: 15px;
+      top: 10px;
+      right: 10px;
       background: rgba(255, 255, 255, 0.85);
       border: none;
       border-radius: 50%;
-      width: 45px;
-      height: 45px;
-      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      font-size: 1.1rem;
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       z-index: 100;
@@ -214,8 +197,6 @@
   <button class="fullscreen-btn" id="fs-btn" title="Tela Cheia">⛶</button>
 
   <div class="game-container">
-    <button class="nav-btn-prev" id="prev-btn" title="Anterior">◀</button>
-
     <div class="card-viewport" id="viewport">
       <div class="card" id="card">
         <div class="image-frame">
@@ -224,7 +205,7 @@
         <div class="item-name" id="card-name">Item</div>
         
         <button class="speak-button" id="speak-btn" type="button">
-          <span>🔊</span>
+          <span>🔊 Ouvir</span>
         </button>
       </div>
     </div>
@@ -239,7 +220,7 @@
       { name: 'Baleia', file: 'baleia.jpg' },
       { name: 'Besouro', file: 'besouro.jpg' },
       { name: 'Borboleta', file: 'borboleta.jpg' },
-      { name: 'Cachorro', file: 'cachorro.jpg' },
+      { name: 'Cachorro', file: 'shihtzu.jpg' },
       { name: 'Camelo', file: 'camelo.jpg' },
       { name: 'Canguru', file: 'canguru.jpg' },
       { name: 'Caranguejo', file: 'caranguejo.jpg' },
@@ -262,9 +243,13 @@
       { name: 'Leão', file: 'leao.jpg' },
       { name: 'Lula', file: 'lula.jpg' },
       { name: 'Macaco', file: 'macaco.jpg' },
+      { name: 'Mamão', file: 'mamao.jpg' },
+      { name: 'Mosca', file: 'mosca.jpg' },
       { name: 'Ovelha', file: 'ovelha.jpg' },
+      { name: 'Panda', file: 'panda.jpg' },
       { name: 'Papagaio', file: 'papagaio.jpg' },
       { name: 'Pato', file: 'pato.jpg' },
+      { name: 'Pavão', file: 'pavao.jpg' },
       { name: 'Pintinho', file: 'pintinho.jpg' },
       { name: 'Polvo', file: 'polvo.jpg' },
       { name: 'Pombo', file: 'pombo.jpg' },
@@ -273,9 +258,12 @@
       { name: 'Rato', file: 'rato.jpg' },
       { name: 'Rinoceronte', file: 'rinoceronte.jpg' },
       { name: 'Sapo', file: 'sapo.jpg' },
+      { name: 'Sereia', file: 'sereia.jpg' },
+      { name: 'Tamanduá', file: 'tamandua.jpg' },
       { name: 'Tartaruga', file: 'tartaruga.jpg' },
       { name: 'Tigre', file: 'tigre.jpg' },
       { name: 'Tubarão', file: 'tubarao.jpg' },
+      { name: 'Tucano', file: 'tucano.jpg' },
       { name: 'Urso', file: 'urso.jpg' },
       { name: 'Vaca', file: 'vaca.jpg' },
       { name: 'Zebra', file: 'zebra.jpg' }
@@ -283,12 +271,11 @@
 
     let currentIndex = 0;
     let isTransitioning = false;
-    let canAdvance = true; // Controla se ela pode avançar ou se precisa apertar o som primeiro
+    let canAdvance = false; // Inicia bloqueado até clicar no som do primeiro animal
     
     const cardImg = document.getElementById('card-img');
     const cardName = document.getElementById('card-name');
     const speakBtn = document.getElementById('speak-btn');
-    const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
 
     function updateNextButtonState() {
@@ -360,38 +347,22 @@
 
     function proximoAnimal() {
       if (isTransitioning) return;
-      if (!canAdvance) return; // Bloqueia se ainda não ouviu o som do animal atual
+      if (!canAdvance) return; // Impede passar sem ouvir o som
 
-      if (currentIndex < items.length - 1) {
-        isTransitioning = true;
-        currentIndex++;
-        renderCard(currentIndex);
-        
-        // Assim que muda para o novo card, bloqueia o avanço até que ela aperte o som
-        canAdvance = false;
-        updateNextButtonState();
+      // Avança para o próximo ou volta para o início se chegar ao fim
+      currentIndex = (currentIndex + 1) % items.length;
+      
+      isTransitioning = true;
+      renderCard(currentIndex);
+      
+      // Bloqueia novamente o avanço até ouvir o som deste novo animal
+      canAdvance = false;
+      updateNextButtonState();
 
-        setTimeout(() => { isTransitioning = false; }, 150);
-      }
-    }
-
-    function animalAnterior() {
-      if (isTransitioning) return;
-      if (currentIndex > 0) {
-        isTransitioning = true;
-        currentIndex--;
-        renderCard(currentIndex);
-        
-        // Ao voltar, permitimos que ela avance livremente ou mantenha a regra se preferir (aqui liberamos para facilitar o fluxo de retorno)
-        canAdvance = true; 
-        updateNextButtonState();
-
-        setTimeout(() => { isTransitioning = false; }, 150);
-      }
+      setTimeout(() => { isTransitioning = false; }, 150);
     }
 
     nextBtn.addEventListener('click', proximoAnimal);
-    prevBtn.addEventListener('click', animalAnterior);
 
     speakBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -399,7 +370,7 @@
       playPopSound(); 
       speakName(items[currentIndex].name);
 
-      // Ao clicar no som, libera o botão de avançar para o próximo animal!
+      // Libera o botão de avançar após ouvir o som
       canAdvance = true;
       updateNextButtonState();
     });
