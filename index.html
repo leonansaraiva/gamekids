@@ -41,54 +41,11 @@
       height: 95vh;
       height: 95dvh;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 10px;
       position: relative;
-    }
-
-    /* Botão Avançar (Novo Estilo 3D Moderno e Divertido) */
-    .nav-btn-next {
-      background: linear-gradient(145deg, #2ecc71, #27ae60);
-      border: 4px solid #ffffff;
-      border-radius: 50%;
-      width: 90px;
-      height: 90px;
-      font-size: 3rem;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 12px 25px rgba(39, 174, 96, 0.45), inset 0 4px 6px rgba(255, 255, 255, 0.4);
-      z-index: 10;
-      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s, opacity 0.2s;
-      outline: none;
-      flex-shrink: 0;
-      margin-left: 12px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    .nav-btn-next:hover {
-      transform: scale(1.05);
-      filter: brightness(1.05);
-    }
-
-    .nav-btn-next:active {
-      transform: scale(0.92);
-      box-shadow: 0 6px 15px rgba(39, 174, 96, 0.4), inset 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    /* Estilo quando bloqueado */
-    .nav-btn-next.locked {
-      background: linear-gradient(145deg, #bdc3c7, #95a5a6);
-      border-color: #ecf0f1;
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none !important;
-      box-shadow: none !important;
-      text-shadow: none;
     }
 
     .card-viewport {
@@ -108,14 +65,16 @@
       max-height: 85dvh;
       background: #ffffff;
       border-radius: 35px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.12),
+        0 8px 16px rgba(0, 0, 0, 0.06);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
       padding: 22px;
       position: absolute;
-      border: 8px solid #fff;
+      border: 6px solid #ffffff;
     }
 
     .image-frame {
@@ -123,11 +82,11 @@
       flex: 1;
       border-radius: 25px;
       overflow: hidden;
-      background-color: #f7f9fc;
+      background: linear-gradient(145deg, #f7f9fc, #eef1f6);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.04);
       min-height: 0;
     }
 
@@ -148,54 +107,207 @@
       text-align: center;
     }
 
-    /* Botão de Som (Novo Estilo Cápsula 3D Premium) */
-    .speak-button {
-      background: linear-gradient(145deg, #ff7675, #d63031);
+    /* ===== BOTÃO ÚNICO QUE SE TRANSFORMA ===== */
+    .action-button {
+      position: relative;
+      border: none;
+      border-radius: 60px;
+      padding: 16px 50px;
+      font-size: clamp(1.8rem, 4vw, 2.3rem);
+      font-weight: 700;
+      font-family: inherit;
       color: white;
-      border: 4px solid #ffffff;
-      border-radius: 50px;
-      padding: 14px 45px;
-      font-size: clamp(2rem, 4.5vw, 2.6rem);
-      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      box-shadow: 0 10px 25px rgba(214, 48, 49, 0.4), inset 0 4px 6px rgba(255, 255, 255, 0.4);
+      gap: 14px;
       cursor: pointer;
       outline: none;
-      width: 85%;
-      max-width: 340px;
-      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 380px;
+      min-height: 90px;
+      transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      overflow: visible;
+      margin-bottom: 5px;
     }
 
-    .speak-button:hover {
-      transform: scale(1.03);
-      filter: brightness(1.05);
+    /* Brilho no topo */
+    .action-button::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 10%;
+      width: 80%;
+      height: 40%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0));
+      border-radius: 60px;
+      pointer-events: none;
     }
 
-    .speak-button:active {
-      transform: scale(0.93);
-      box-shadow: 0 5px 12px rgba(214, 48, 49, 0.4), inset 0 2px 4px rgba(0,0,0,0.2);
+    /* ===== ESTADO: OUVIR (ROSA) ===== */
+    .action-button.speak-mode {
+      background: linear-gradient(160deg, #fda4af 0%, #fb7185 40%, #e11d48 100%);
+      box-shadow: 
+        0 10px 25px rgba(225, 29, 72, 0.35),
+        0 4px 10px rgba(0, 0, 0, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.08);
+      animation: speak-pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes speak-pulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 
+          0 10px 25px rgba(225, 29, 72, 0.35),
+          0 4px 10px rgba(0, 0, 0, 0.1),
+          inset 0 2px 4px rgba(255, 255, 255, 0.4),
+          inset 0 -2px 4px rgba(0, 0, 0, 0.08);
+      }
+      50% {
+        transform: scale(1.04);
+        box-shadow: 
+          0 14px 32px rgba(225, 29, 72, 0.5),
+          0 6px 14px rgba(0, 0, 0, 0.12),
+          inset 0 2px 4px rgba(255, 255, 255, 0.4),
+          inset 0 -2px 4px rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    .action-button.speak-mode .icon-sound {
+      display: inline-block;
+      font-size: 1.2em;
+      animation: sound-wave 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+    }
+
+    @keyframes sound-wave {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.15) rotate(-5deg); }
+      75% { transform: scale(1.15) rotate(5deg); }
+    }
+
+    .action-button.speak-mode .icon-arrow {
+      display: none;
+    }
+
+    /* ===== ESTADO: AVANÇAR (VERDE) ===== */
+    .action-button.next-mode {
+      background: linear-gradient(160deg, #6ee7b7 0%, #34d399 40%, #10b981 100%);
+      box-shadow: 
+        0 10px 25px rgba(16, 185, 129, 0.45),
+        0 4px 10px rgba(0, 0, 0, 0.12),
+        inset 0 2px 4px rgba(255, 255, 255, 0.5),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+      animation: next-pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes next-pulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 
+          0 10px 25px rgba(16, 185, 129, 0.45),
+          0 4px 10px rgba(0, 0, 0, 0.12),
+          inset 0 2px 4px rgba(255, 255, 255, 0.5),
+          inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+      }
+      50% {
+        transform: scale(1.04);
+        box-shadow: 
+          0 14px 32px rgba(16, 185, 129, 0.6),
+          0 6px 14px rgba(0, 0, 0, 0.15),
+          inset 0 2px 4px rgba(255, 255, 255, 0.5),
+          inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    .action-button.next-mode .icon-sound {
+      display: none;
+    }
+
+    .action-button.next-mode .icon-arrow {
+      display: inline-block;
+      font-size: 1.2em;
+      animation: arrow-slide 1.2s ease-in-out infinite;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+    }
+
+    @keyframes arrow-slide {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(8px); }
+    }
+
+    /* Anel pulsante no modo avançar */
+    .action-button.next-mode::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 60px;
+      border: 4px solid rgba(52, 211, 153, 0.6);
+      animation: ring-expand 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes ring-expand {
+      0% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(1.08);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* Hover */
+    .action-button:hover {
+      transform: scale(1.05) translateY(-2px);
+      animation-play-state: paused;
+    }
+
+    /* Active (clique) */
+    .action-button:active {
+      transform: scale(0.95) translateY(0);
+      animation-play-state: paused;
+      transition: all 0.1s ease;
     }
 
     .fullscreen-btn {
       position: fixed;
-      top: 10px;
-      right: 10px;
-      background: rgba(255, 255, 255, 0.9);
-      border: none;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 2px solid rgba(255, 255, 255, 0.9);
       border-radius: 50%;
-      width: 42px;
-      height: 42px;
-      font-size: 1.2rem;
+      width: 44px;
+      height: 44px;
+      font-size: 1.15rem;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        inset 0 1px 2px rgba(255, 255, 255, 0.6);
       z-index: 100;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: all 0.2s ease;
+      color: #4a5568;
+    }
+
+    .fullscreen-btn:hover {
+      background: rgba(255, 255, 255, 0.95);
+      transform: scale(1.08);
+    }
+
+    .fullscreen-btn:active {
+      transform: scale(0.95);
     }
 
     #loading-screen {
@@ -228,13 +340,13 @@
         </div>
         <div class="item-name" id="card-name">Item</div>
         
-        <button class="speak-button" id="speak-btn" type="button">
-          <span>🔊</span> <span>Ouvir</span>
+        <button class="action-button speak-mode" id="action-btn" type="button">
+          <span class="icon-sound">🔊</span>
+          <span class="icon-arrow">▶</span>
+          <span class="btn-label" id="btn-label">Ouvir</span>
         </button>
       </div>
     </div>
-
-    <button class="nav-btn-next" id="next-btn" title="Próximo">▶</button>
   </div>
 
   <script>
@@ -244,7 +356,7 @@
       { name: 'Baleia', file: 'baleia.jpg' },
       { name: 'Besouro', file: 'besouro.jpg' },
       { name: 'Borboleta', file: 'borboleta.jpg' },
-      { name: 'Cachorro', file: 'cachorro.jpg' },
+      { name: 'Cachorro', file: 'shihtzu.jpg' },
       { name: 'Camelo', file: 'camelo.jpg' },
       { name: 'Canguru', file: 'canguru.jpg' },
       { name: 'Caranguejo', file: 'caranguejo.jpg' },
@@ -267,6 +379,7 @@
       { name: 'Leão', file: 'leao.jpg' },
       { name: 'Lula', file: 'lula.jpg' },
       { name: 'Macaco', file: 'macaco.jpg' },
+      { name: 'Mamão', file: 'mamao.jpg' },
       { name: 'Mosca', file: 'mosca.jpg' },
       { name: 'Ovelha', file: 'ovelha.jpg' },
       { name: 'Panda', file: 'panda.jpg' },
@@ -294,20 +407,12 @@
 
     let currentIndex = 0;
     let isTransitioning = false;
-    let canAdvance = false;
+    let currentMode = 'speak'; // 'speak' ou 'next'
     
     const cardImg = document.getElementById('card-img');
     const cardName = document.getElementById('card-name');
-    const speakBtn = document.getElementById('speak-btn');
-    const nextBtn = document.getElementById('next-btn');
-
-    function updateNextButtonState() {
-      if (canAdvance) {
-        nextBtn.classList.remove('locked');
-      } else {
-        nextBtn.classList.add('locked');
-      }
-    }
+    const actionBtn = document.getElementById('action-btn');
+    const btnLabel = document.getElementById('btn-label');
 
     function preloadAllImages() {
       let loadedCount = 0;
@@ -361,39 +466,44 @@
       }
     }
 
+    function setButtonMode(mode) {
+      currentMode = mode;
+      if (mode === 'speak') {
+        actionBtn.classList.remove('next-mode');
+        actionBtn.classList.add('speak-mode');
+        btnLabel.textContent = 'Ouvir';
+      } else {
+        actionBtn.classList.remove('speak-mode');
+        actionBtn.classList.add('next-mode');
+        btnLabel.textContent = 'Avançar';
+      }
+    }
+
     function renderCard(index) {
       const item = items[index];
       cardImg.src = `imagens/${item.file}`;
       cardName.textContent = item.name;
-      updateNextButtonState();
+      setButtonMode('speak');
     }
 
-    function proximoAnimal() {
+    function handleAction() {
       if (isTransitioning) return;
-      if (!canAdvance) return;
 
-      currentIndex = (currentIndex + 1) % items.length;
-      
-      isTransitioning = true;
-      renderCard(currentIndex);
-      
-      canAdvance = false;
-      updateNextButtonState();
-
-      setTimeout(() => { isTransitioning = false; }, 150);
+      if (currentMode === 'speak') {
+        // Modo OUVIR: toca o som e muda para AVANÇAR
+        playPopSound();
+        speakName(items[currentIndex].name);
+        setButtonMode('next');
+      } else {
+        // Modo AVANÇAR: vai para o próximo animal
+        isTransitioning = true;
+        currentIndex = (currentIndex + 1) % items.length;
+        renderCard(currentIndex);
+        setTimeout(() => { isTransitioning = false; }, 300);
+      }
     }
 
-    nextBtn.addEventListener('click', proximoAnimal);
-
-    speakBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      playPopSound(); 
-      speakName(items[currentIndex].name);
-
-      canAdvance = true;
-      updateNextButtonState();
-    });
+    actionBtn.addEventListener('click', handleAction);
 
     document.getElementById('fs-btn').addEventListener('click', () => {
       if (!document.fullscreenElement) {
